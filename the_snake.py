@@ -157,7 +157,6 @@ def handle_keys(game_object: Snake):
                 raise SystemExit
 
 
-
 def main():
     """основной цикл игры"""
     snake = Snake()
