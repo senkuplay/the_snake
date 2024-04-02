@@ -12,7 +12,7 @@ GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
 
 # Середина игровой области
-SCREEN_CENTER = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
+SCREEN_CENTER = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
 
 # Направления движения:
 UP = (0, -1)
@@ -56,7 +56,7 @@ class GameObject:
     """Базовый класс, от которого наследуются другие игровые объекты."""
 
     def __init__(self, body_color=None):
-        self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        self.position = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
         self.body_color = body_color
 
     def draw(self):
@@ -121,19 +121,21 @@ class Snake(GameObject):
 class Apple(GameObject):
     """Класс описывающий яблоко"""
 
-    def __init__(self, snake_position=SCREEN_CENTER, body_color=APPLE_COLOR):
+    def __init__(self,
+                 occupied_positions=(SCREEN_CENTER,),
+                 body_color=APPLE_COLOR):
         super().__init__(body_color)
-        self.snake_position = snake_position
-        self.randomize_position(snake_position)
+        self.soccupied_positions = occupied_positions
+        self.randomize_position(occupied_positions)
 
-    def randomize_position(self, snake_position):
+    def randomize_position(self, occupied_positions):
         """устанавливает случайное положение яблока"""
         while True:
             self.position = (
                 randint(0, GRID_WIDTH - 1) * GRID_SIZE,
                 randint(0, GRID_HEIGHT - 1) * GRID_SIZE
             )
-            if self.position not in snake_position:
+            if self.position not in occupied_positions:
                 break
 
     def draw(self):
@@ -167,7 +169,7 @@ def handle_keys(game_object: Snake):
 def main():
     """основной цикл игры"""
     snake = Snake()
-    apple = Apple(snake.position)
+    apple = Apple(snake.positions)
 
     screen.fill(BOARD_BACKGROUND_COLOR)
     print('Starting game...')
